@@ -60,6 +60,7 @@ Iterative A(2, 2) = 7
 
 --- Problem 2: Powerset ---
 powerset(S) = { () (c) (b) (b,c) (a) (a,c) (a,b) (a,b,c) }
+```
 
 ## 5. 申論及開發報告
 寫下使用到某資料結構、演算法的原因：
