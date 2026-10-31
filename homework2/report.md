@@ -42,7 +42,7 @@ public:
         termArray = new Term[capacity];
     }
     
-    // 新增一項與動態擴容
+    // 新增非零的係數指數，然後記憶體滿的時候增加記憶體容量
     void newTerm(const float theCoef, const int theExp) {
         if (theCoef == 0) return;
         if (terms == capacity) {
@@ -98,6 +98,6 @@ public:
 
 int main() {
     Polynomial p1, p2, p3;
-    // 範例主程式呼叫與互動邏輯
+    // 呼叫程式的邏輯 跟互動選單
     return 0;
 }
