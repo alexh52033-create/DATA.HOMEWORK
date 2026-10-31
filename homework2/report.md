@@ -15,4 +15,89 @@
 3. 運算邏輯：
    * 加法：用雙指標掃描兩個多項式，然後看指數大小進行對應的係數相加或合併。
    * 乘法：透過雙層迴圈將各項相乘產生暫存多項式，再逐步呼叫加法功能將結果合併。
-   
+## 2. 程式實作
+
+以下為主要程式碼:
+
+```cpp
+#include <iostream>
+#include <algorithm>
+using namespace std;
+
+class Polynomial;
+
+class Term {
+    friend Polynomial;
+    float coef; // 係數
+    int exp;    // 指數
+};
+
+class Polynomial {
+private:
+    Term* termArray; // 動態陣列儲存非零項
+    int capacity;    // 容量
+    int terms;       // 有幾項
+public:
+    Polynomial() : capacity(2), terms(0) {
+        termArray = new Term[capacity];
+    }
+    
+    // 新增一項與動態擴容
+    void newTerm(const float theCoef, const int theExp) {
+        if (theCoef == 0) return;
+        if (terms == capacity) {
+            capacity *= 2;
+            Term* temp = new Term[capacity];
+            copy(termArray, termArray + terms, temp);
+            delete[] termArray;
+            termArray = temp;
+        }
+        termArray[terms].coef = theCoef;
+        termArray[terms++].exp = theExp;
+    }
+
+    // 多項式加法
+    Polynomial Add(const Polynomial& b) {
+        Polynomial c;
+        int aPos = 0, bPos = 0;
+        while ((aPos < terms) && (bPos < b.terms)) {
+            if (termArray[aPos].exp == b.termArray[bPos].exp) {
+                float t = termArray[aPos].coef + b.termArray[bPos].coef;
+                if (t != 0) c.newTerm(t, termArray[aPos].exp);
+                aPos++; bPos++;
+            }
+            else if (termArray[aPos].exp < b.termArray[bPos].exp) {
+                c.newTerm(b.termArray[bPos].coef, b.termArray[bPos].exp);
+                bPos++;
+            }
+            else {
+                c.newTerm(termArray[aPos].coef, termArray[aPos].exp);
+                aPos++;
+            }
+        }
+        for (; aPos < terms; aPos++) c.newTerm(termArray[aPos].coef, termArray[aPos].exp);
+        for (; bPos < b.terms; bPos++) c.newTerm(b.termArray[bPos].coef, b.termArray[bPos].exp);
+        return c;
+    }
+
+    // 多項式乘法
+    Polynomial Mult(const Polynomial& b) {
+        Polynomial c;
+        for (int i = 0; i < terms; i++) {
+            Polynomial temp;
+            for (int j = 0; j < b.terms; j++) {
+                float newCoef = termArray[i].coef * b.termArray[j].coef;
+                int newExp = termArray[i].exp + b.termArray[j].exp;
+                temp.newTerm(newCoef, newExp);
+            }
+            c = c.Add(temp);
+        }
+        return c;
+    }
+};
+
+int main() {
+    Polynomial p1, p2, p3;
+    // 範例主程式呼叫與互動邏輯
+    return 0;
+}
